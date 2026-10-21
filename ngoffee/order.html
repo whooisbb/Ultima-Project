@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Pesan makanan dan minuman dari kamar hotel Anda. Sistem pemesanan digital NGOFFEE Café & Hotel.">
+  <title>Pesan Menu - NGOFFEE Café & Hotel</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ============================================================
+       QR SCAN / ROOM SELECTION PAGE
+       ============================================================ -->
+  <div class="qr-scan-page" id="qrScanPage">
+    <div class="qr-scan-card">
+      <div class="scan-icon">📱</div>
+      
+      <div style="margin-bottom: 24px;">
+        <svg viewBox="0 0 160 44" xmlns="http://www.w3.org/2000/svg" style="margin: 0 auto;">
+          <path d="M22 2L39 12V32L22 42L5 32V12L22 2Z" fill="#0d3b2e"/>
+          <text x="22" y="24" text-anchor="middle" dominant-baseline="central" font-family="Poppins, sans-serif" font-weight="800" font-size="8" fill="white">NG</text>
+          <circle cx="28" cy="18" r="3" fill="#c8956c"/>
+          <text x="90" y="22" text-anchor="start" dominant-baseline="central" font-family="Poppins, sans-serif" font-weight="800" font-size="16" fill="#0d3b2e">NGOFFEE</text>
+          <text x="90" y="36" text-anchor="start" font-family="Inter" font-size="7" fill="#737373" letter-spacing="2">CAFÉ & HOTEL</text>
+        </svg>
+      </div>
+      
+      <h2>Selamat Datang!</h2>
+      <p>Pilih kamar Anda untuk mulai memesan makanan dan minuman</p>
+      
+      <select class="room-select" id="roomSelect">
+        <option value="">-- Pilih Nomor Kamar --</option>
+        <option value="101">Kamar 101 - Lantai 1</option>
+        <option value="102">Kamar 102 - Lantai 1</option>
+        <option value="103">Kamar 103 - Lantai 1</option>
+        <option value="201">Kamar 201 - Lantai 2</option>
+        <option value="202">Kamar 202 - Lantai 2</option>
+        <option value="203">Kamar 203 - Lantai 2</option>
+        <option value="301">Kamar 301 - Lantai 3</option>
+        <option value="302">Kamar 302 - Lantai 3</option>
+        <option value="303">Kamar 303 - Lantai 3</option>
+        <option value="304">Kamar 304 - Lantai 3</option>
+      </select>
+      
+      <button class="btn btn-primary btn-lg" style="width: 100%;" id="enterOrderBtn" disabled>
+        <i class="fas fa-arrow-right"></i> Mulai Pesan
+      </button>
+      
+      <p style="margin-top: 20px; font-size: 0.8rem; color: #a6a6a6;">
+        <i class="fas fa-info-circle"></i> 
+        Akses melalui QR Code di kamar. Tidak perlu membuat akun.
+      </p>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       ORDER PAGE
+       ============================================================ -->
+  <div class="order-page" id="orderPage" style="display: none;">
+    
+    <!-- Order Header -->
+    <header class="order-header">
+      <div class="container">
+        <a href="index.html" class="navbar-brand">
+          <svg class="logo-icon" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22 2L39 12V32L22 42L5 32V12L22 2Z" fill="#0d3b2e" stroke="#1a6b52" stroke-width="1.5"/>
+            <text x="22" y="24" text-anchor="middle" dominant-baseline="central" font-family="Poppins, sans-serif" font-weight="800" font-size="8" fill="white">NG</text>
+            <circle cx="28" cy="18" r="3.5" fill="#c8956c"/>
+          </svg>
+          <div>
+            <div class="brand-text">NGOFFEE</div>
+            <div class="brand-subtitle">Café & Hotel</div>
+          </div>
+        </a>
+        
+        <div class="room-info" id="roomInfoDisplay">
+          <i class="fas fa-door-open"></i>
+          <span>Kamar <strong id="roomNumber">-</strong></span>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="order-layout">
+        
+        <!-- Menu List -->
+        <div class="order-menu">
+          <div class="order-search">
+            <div class="search-input-wrapper">
+              <i class="fas fa-search search-icon"></i>
+              <input type="text" placeholder="Cari menu favorit Anda..." id="menuSearch">
+            </div>
+          </div>
+
+          <div class="order-categories" id="orderCategories">
+            <button class="order-category active" data-cat="all">
+              <i class="fas fa-th-large"></i> Semua
+            </button>
+            <button class="order-category" data-cat="coffee">
+              ☕ Kopi
+            </button>
+            <button class="order-category" data-cat="non-coffee">
+              🧃 Non-Kopi
+            </button>
+            <button class="order-category" data-cat="food">
+              🍽️ Makanan
+            </button>
+            <button class="order-category" data-cat="snack">
+              🍰 Snack
+            </button>
+          </div>
+
+          <div class="order-menu-grid" id="orderMenuGrid">
+            <!-- Items generated by JS -->
+          </div>
+        </div>
+
+        <!-- Cart Sidebar -->
+        <div class="order-cart" id="orderCart">
+          <div class="cart-title">
+            <i class="fas fa-shopping-bag"></i> 
+            Keranjang 
+            <span class="cart-count" id="cartCount">0</span>
+          </div>
+
+          <div class="cart-items" id="cartItems">
+            <div class="empty-state">
+              <div class="empty-icon">🛒</div>
+              <h4>Keranjang Kosong</h4>
+              <p>Pilih menu untuk memulai pesanan Anda</p>
+            </div>
+          </div>
+
+          <div class="cart-summary" id="cartSummary" style="display: none;">
+            <div class="cart-row">
+              <span>Subtotal</span>
+              <span id="subtotalAmount">Rp 0</span>
+            </div>
+            <div class="cart-row total">
+              <span>Total</span>
+              <span id="totalAmount">Rp 0</span>
+            </div>
+          </div>
+
+          <div class="cart-notes">
+            <textarea placeholder="Catatan tambahan (opsional)..." id="orderNotes"></textarea>
+          </div>
+
+          <button class="cart-checkout" id="checkoutBtn" disabled>
+            <i class="fas fa-credit-card"></i> Pilih Pembayaran
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       PAYMENT MODAL
+       ============================================================ -->
+  <div class="modal-overlay" id="paymentModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3><i class="fas fa-credit-card"></i> Pilih Pembayaran</h3>
+        <button class="modal-close" id="closePaymentModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="payment-options">
+          <div class="payment-option" data-method="qris" id="paymentQris">
+            <div class="payment-option-icon" style="background: #e0f2fe;">💳</div>
+            <div>
+              <h4>QRIS</h4>
+              <p>Transfer melalui QRIS dan unggah bukti pembayaran</p>
+            </div>
+          </div>
+          <div class="payment-option" data-method="cash" id="paymentCash">
+            <div class="payment-option-icon" style="background: #dcfce7;">💵</div>
+            <div>
+              <h4>Cash</h4>
+              <p>Bayar saat pesanan diantar ke kamar Anda</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- QRIS Upload Area -->
+        <div class="qris-upload" id="qrisUpload">
+          <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: #1a6b52; margin-bottom: 8px;"></i>
+          <p>Klik untuk unggah bukti pembayaran QRIS</p>
+          <input type="file" id="qrisFile" accept="image/*" style="display: none;">
+          <p style="font-size: 0.78rem; color: #a6a6a6; margin-top: 8px;">Format: JPG, PNG (Maks. 5MB)</p>
+        </div>
+
+        <div style="margin-top: 16px;">
+          <div class="cart-row total" style="border-top: 2px solid #e8e8e8; padding-top: 12px;">
+            <span>Total Pembayaran</span>
+            <span id="paymentTotal">Rp 0</span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-lg" style="width: 100%; margin-top: 16px;" id="confirmPaymentBtn" disabled>
+          <i class="fas fa-check-circle"></i> Konfirmasi Pesanan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       ORDER SUCCESS MODAL
+       ============================================================ -->
+  <div class="modal-overlay" id="successModal">
+    <div class="modal">
+      <div class="modal-body">
+        <div class="order-success">
+          <div class="success-icon">✓</div>
+          <h2>Pesanan Berhasil Dibuat! 🎉</h2>
+          <p style="color: #737373; margin-bottom: 16px;">
+            Pesanan Anda sudah masuk ke sistem dan sedang menunggu konfirmasi kasir.
+          </p>
+          <div class="order-number" id="orderNumber">NGF-20241021-0001</div>
+          
+          <div style="margin-top: 24px; text-align: left; background: #f5f5f5; border-radius: 12px; padding: 16px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem;">
+              <span style="color: #737373;">Kamar</span>
+              <span style="font-weight: 600;" id="successRoom">-</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem;">
+              <span style="color: #737373;">Pembayaran</span>
+              <span style="font-weight: 600;" id="successPayment">-</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
+              <span style="color: #737373;">Status</span>
+              <span class="badge badge-warning">Menunggu Validasi</span>
+            </div>
+          </div>
+
+          <div style="margin-top: 24px; display: flex; gap: 12px; justify-content: center;">
+            <button class="btn btn-primary" id="newOrderBtn">
+              <i class="fas fa-plus"></i> Pesan Lagi
+            </button>
+            <a href="index.html" class="btn btn-secondary">
+              <i class="fas fa-home"></i> Ke Beranda
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/order.js"></script>
+</body>
+</html>
