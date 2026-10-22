@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Dashboard Sistem NGOFFEE - Kelola pesanan, dapur, dan administrasi café & hotel">
+  <title>Dashboard - NGOFFEE Sistem Informasi</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ============================================================
+       LOGIN PAGE
+       ============================================================ -->
+  <div class="login-page" id="loginPage">
+    <div class="login-card">
+      <div class="logo-area">
+        <svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" style="width: 60px; height: 60px; margin: 0 auto 12px;">
+          <path d="M22 2L39 12V32L22 42L5 32V12L22 2Z" fill="#0d3b2e" stroke="#1a6b52" stroke-width="1.5"/>
+          <text x="22" y="24" text-anchor="middle" dominant-baseline="central" font-family="Poppins, sans-serif" font-weight="800" font-size="8" fill="white">NG</text>
+          <circle cx="28" cy="18" r="3.5" fill="#c8956c"/>
+        </svg>
+        <div class="brand-text">NGOFFEE</div>
+        <div class="brand-subtitle">Café & Hotel</div>
+      </div>
+
+      <h2>Masuk ke Dashboard</h2>
+
+      <div class="role-selector" id="roleSelector">
+        <div class="role-card" data-role="kasir">
+          <div class="role-icon">💰</div>
+          <div class="role-name">Kasir</div>
+        </div>
+        <div class="role-card" data-role="kitchen">
+          <div class="role-icon">👨‍🍳</div>
+          <div class="role-name">Kitchen</div>
+        </div>
+        <div class="role-card" data-role="admin">
+          <div class="role-icon">👤</div>
+          <div class="role-name">Admin</div>
+        </div>
+        <div class="role-card" data-role="owner">
+          <div class="role-icon">🏢</div>
+          <div class="role-name">Owner</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input type="text" class="form-input" id="loginUsername" placeholder="Masukkan username" value="admin">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" id="loginPassword" placeholder="Masukkan password" value="admin123">
+      </div>
+
+      <button class="btn btn-primary btn-lg" style="width: 100%;" id="loginBtn" disabled>
+        <i class="fas fa-sign-in-alt"></i> Masuk
+      </button>
+
+      <p style="text-align: center; margin-top: 16px; font-size: 0.8rem; color: #a6a6a6;">
+        <a href="index.html" style="color: #1a6b52;">← Kembali ke Website</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       DASHBOARD
+       ============================================================ -->
+  <div class="dashboard" id="dashboardPage" style="display: none;">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" style="width: 36px; height: 36px; flex-shrink: 0;">
+          <path d="M18 2L33 10V26L18 34L3 26V10L18 2Z" fill="#1a6b52"/>
+          <text x="18" y="19" text-anchor="middle" dominant-baseline="central" font-family="Poppins" font-weight="800" font-size="7" fill="white">NG</text>
+        </svg>
+        <div>
+          <div class="brand-text">NGOFFEE</div>
+          <div class="brand-role" id="sidebarRole">Kasir</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" id="sidebarNav">
+        <!-- Navigation items inserted by JS based on role -->
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="avatar" id="userAvatar">A</div>
+          <div>
+            <div class="user-name" id="userName">Admin</div>
+            <div class="user-role" id="userRole">Administrator</div>
+          </div>
+        </div>
+        <button class="btn btn-ghost btn-sm" style="width: 100%; margin-top: 12px; color: #a6a6a6;" id="logoutBtn">
+          <i class="fas fa-sign-out-alt"></i> Keluar
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dash-main" id="dashMain">
+      
+      <!-- ==================== KASIR SECTIONS ==================== -->
+      
+      <!-- Kasir: Overview -->
+      <div class="dash-section active" id="section-overview">
+        <div class="dash-top">
+          <div>
+            <h1>Dashboard Overview</h1>
+            <p class="dash-date" id="currentDate">-</p>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="location.reload()">
+            <i class="fas fa-sync-alt"></i> Refresh
+          </button>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <div class="stat-card-icon green"><i class="fas fa-receipt"></i></div>
+              <span class="stat-card-change up">+12%</span>
+            </div>
+            <div class="stat-card-value" id="statTotalOrders">24</div>
+            <div class="stat-card-label">Total Pesanan Hari Ini</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <div class="stat-card-icon blue"><i class="fas fa-clock"></i></div>
+              <span class="stat-card-change up">+3</span>
+            </div>
+            <div class="stat-card-value" id="statPending">5</div>
+            <div class="stat-card-label">Menunggu Validasi</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <div class="stat-card-icon orange"><i class="fas fa-money-bill-wave"></i></div>
+              <span class="stat-card-change up">+18%</span>
+            </div>
+            <div class="stat-card-value" id="statRevenue">Rp 1.2jt</div>
+            <div class="stat-card-label">Pendapatan Hari Ini</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <div class="stat-card-icon red"><i class="fas fa-check-circle"></i></div>
+            </div>
+            <div class="stat-card-value" id="statCompleted">19</div>
+            <div class="stat-card-label">Pesanan Selesai</div>
+          </div>
+        </div>
+
+        <!-- Recent Orders Table -->
+        <div class="dash-table-card">
+          <div class="dash-table-header">
+            <h3><i class="fas fa-list"></i> Pesanan Terbaru</h3>
+            <div class="dash-table-filters">
+              <button class="dash-filter active" data-filter="all">Semua</button>
+              <button class="dash-filter" data-filter="pending">Pending</button>
+              <button class="dash-filter" data-filter="processing">Proses</button>
+              <button class="dash-filter" data-filter="completed">Selesai</button>
+            </div>
+          </div>
+          <table class="dash-table">
+            <thead>
+              <tr>
+                <th>ID Pesanan</th>
+                <th>Kamar</th>
+                <th>Item</th>
+                <th>Total</th>
+                <th>Pembayaran</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTableBody">
+              <!-- Generated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Kasir: Validasi Pesanan -->
+      <div class="dash-section" id="section-validasi">
+        <div class="dash-top">
+          <div>
+            <h1>Validasi Pesanan</h1>
+            <p class="dash-date">Periksa dan validasi pembayaran pesanan masuk</p>
+          </div>
+        </div>
+
+        <div class="dash-table-card">
+          <div class="dash-table-header">
+            <h3><i class="fas fa-clipboard-check"></i> Pesanan Menunggu Validasi</h3>
+          </div>
+          <table class="dash-table">
+            <thead>
+              <tr>
+                <th>ID Pesanan</th>
+                <th>Kamar</th>
+                <th>Item</th>
+                <th>Total</th>
+                <th>Metode</th>
+                <th>Bukti</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="validasiTableBody">
+              <!-- Generated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Kasir: Transaksi -->
+      <div class="dash-section" id="section-transaksi">
+        <div class="dash-top">
+          <div>
+            <h1>Transaksi Harian</h1>
+            <p class="dash-date">Riwayat transaksi dan laporan harian</p>
+          </div>
+          <button class="btn btn-secondary btn-sm">
+            <i class="fas fa-download"></i> Export
+          </button>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <div class="stat-card-icon green"><i class="fas fa-wallet"></i></div>
+            </div>
+            <div class="stat-card-value">Rp 850.000</div>
+            <div class="stat-card-label">Total QRIS</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <div class="stat-card-icon blue"><i class="fas fa-money-bill"></i></div>
+            </div>
+            <div class="stat-card-value">Rp 350.000</div>
+            <div class="stat-card-label">Total Cash</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <div class="stat-card-icon orange"><i class="fas fa-chart-line"></i></div>
+            </div>
+            <div class="stat-card-value">Rp 1.200.000</div>
+            <div class="stat-card-label">Total Keseluruhan</div>
+          </div>
+        </div>
+
+        <div class="dash-table-card">
+          <div class="dash-table-header">
+            <h3><i class="fas fa-history"></i> Riwayat Transaksi</h3>
+          </div>
+          <table class="dash-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Waktu</th>
+                <th>Kamar</th>
+                <th>Total</th>
+                <th>Metode</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="transaksiTableBody">
+              <!-- Generated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ==================== KITCHEN SECTIONS ==================== -->
+      
+      <!-- Kitchen: Antrian -->
+      <div class="dash-section" id="section-antrian">
+        <div class="dash-top">
+          <div>
+            <h1>Antrian Pesanan</h1>
+            <p class="dash-date">Pesanan yang sudah divalidasi dan siap diproses</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <span class="badge badge-warning" id="antrianCount">3 Antrian</span>
+          </div>
+        </div>
+
+        <div class="kitchen-grid" id="kitchenGrid">
+          <!-- Generated by JS -->
+        </div>
+      </div>
+
+      <!-- Kitchen: Proses -->
+      <div class="dash-section" id="section-proses">
+        <div class="dash-top">
+          <div>
+            <h1>Sedang Diproses</h1>
+            <p class="dash-date">Pesanan yang sedang dipersiapkan</p>
+          </div>
+        </div>
+        <div class="kitchen-grid" id="prosesGrid">
+          <!-- Generated by JS -->
+        </div>
+      </div>
+
+      <!-- Kitchen: Siap Antar -->
+      <div class="dash-section" id="section-siap-antar">
+        <div class="dash-top">
+          <div>
+            <h1>Siap Diantar</h1>
+            <p class="dash-date">Pesanan yang sudah selesai dan siap diantar ke kamar</p>
+          </div>
+        </div>
+        <div class="kitchen-grid" id="siapAntarGrid">
+          <!-- Generated by JS -->
+        </div>
+      </div>
+
+      <!-- ==================== ADMIN SECTIONS ==================== -->
+      
+      <!-- Admin: Menu Management -->
+      <div class="dash-section" id="section-kelola-menu">
+        <div class="dash-top">
+          <div>
+            <h1>Kelola Menu</h1>
+            <p class="dash-date">Tambah, edit, dan hapus menu</p>
+          </div>
+          <button class="btn btn-primary btn-sm" id="addMenuBtn">
+            <i class="fas fa-plus"></i> Tambah Menu
+          </button>
+        </div>
+
+        <!-- Add/Edit Form -->
+        <div class="admin-form-card" id="menuFormCard" style="display: none;">
+          <h3 id="menuFormTitle"><i class="fas fa-plus-circle"></i> Tambah Menu Baru</h3>
+          <form id="menuForm">
+            <div class="form-row">
+              <div class="input-group">
+                <label>Nama Menu</label>
+                <input type="text" id="menuName" placeholder="Contoh: Cappuccino" required>
+              </div>
+              <div class="input-group">
+                <label>Kategori</label>
+                <select id="menuCategory" required>
+                  <option value="">Pilih Kategori</option>
+                  <option value="coffee">Kopi</option>
+                  <option value="non-coffee">Non-Kopi</option>
+                  <option value="food">Makanan</option>
+                  <option value="snack">Snack</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="input-group">
+                <label>Harga (Rp)</label>
+                <input type="number" id="menuPrice" placeholder="28000" required>
+              </div>
+              <div class="input-group">
+                <label>Stok</label>
+                <input type="number" id="menuStock" placeholder="50" required>
+              </div>
+            </div>
+            <div class="input-group">
+              <label>Deskripsi</label>
+              <textarea id="menuDesc" placeholder="Deskripsi singkat menu..." rows="2"></textarea>
+            </div>
+            <div style="display: flex; gap: 8px; justify-content: flex-end;">
+              <button type="button" class="btn btn-ghost btn-sm" id="cancelMenuBtn">Batal</button>
+              <button type="submit" class="btn btn-primary btn-sm">
+                <i class="fas fa-save"></i> Simpan
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="dash-table-card">
+          <div class="dash-table-header">
+            <h3><i class="fas fa-utensils"></i> Daftar Menu</h3>
+          </div>
+          <table class="dash-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Nama Menu</th>
+                <th>Kategori</th>
+                <th>Harga</th>
+                <th>Stok</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="adminMenuTable">
+              <!-- Generated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Admin: Kamar & QR -->
+      <div class="dash-section" id="section-kelola-kamar">
+        <div class="dash-top">
+          <div>
+            <h1>Kelola Kamar & QR Code</h1>
+            <p class="dash-date">Atur kamar hotel dan QR code untuk pemesanan</p>
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <div class="stat-card-icon green"><i class="fas fa-door-open"></i></div>
+            </div>
+            <div class="stat-card-value">10</div>
+            <div class="stat-card-label">Total Kamar</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <div class="stat-card-icon blue"><i class="fas fa-qrcode"></i></div>
+            </div>
+            <div class="stat-card-value">10</div>
+            <div class="stat-card-label">QR Code Aktif</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <div class="stat-card-icon orange"><i class="fas fa-bed"></i></div>
+            </div>
+            <div class="stat-card-value">7</div>
+            <div class="stat-card-label">Kamar Terisi</div>
+          </div>
+        </div>
+
+        <div class="dash-table-card">
+          <div class="dash-table-header">
+            <h3><i class="fas fa-hotel"></i> Daftar Kamar</h3>
+          </div>
+          <table class="dash-table">
+            <thead>
+              <tr>
+                <th>No. Kamar</th>
+                <th>Lantai</th>
+                <th>Tipe</th>
+                <th>Status</th>
+                <th>QR Code</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="kamarTableBody">
+              <!-- Generated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Admin: Staf Management -->
+      <div class="dash-section" id="section-kelola-staf">
+        <div class="dash-top">
+          <div>
+            <h1>Kelola Staf</h1>
+            <p class="dash-date">Kelola staf dan hak akses sistem</p>
+          </div>
+          <button class="btn btn-primary btn-sm">
+            <i class="fas fa-user-plus"></i> Tambah Staf
+          </button>
+        </div>
+
+        <div class="dash-table-card">
+          <div class="dash-table-header">
+            <h3><i class="fas fa-users"></i> Daftar Staf</h3>
+          </div>
+          <table class="dash-table">
+            <thead>
+              <tr>
+                <th>Nama</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Terakhir Login</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="stafTableBody">
+              <!-- Generated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Admin: Laporan -->
+      <div class="dash-section" id="section-laporan">
+        <div class="dash-top">
+          <div>
+            <h1>Laporan Keuangan</h1>
+            <p class="dash-date">Ringkasan laporan pendapatan dan transaksi</p>
+          </div>
+          <button class="btn btn-secondary btn-sm">
+            <i class="fas fa-file-pdf"></i> Export PDF
+          </button>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <div class="stat-card-icon green"><i class="fas fa-chart-bar"></i></div>
+              <span class="stat-card-change up">+15%</span>
+            </div>
+            <div class="stat-card-value">Rp 35.2jt</div>
+            <div class="stat-card-label">Pendapatan Bulan Ini</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <div class="stat-card-icon blue"><i class="fas fa-shopping-cart"></i></div>
+              <span class="stat-card-change up">+8%</span>
+            </div>
+            <div class="stat-card-value">642</div>
+            <div class="stat-card-label">Total Transaksi</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <div class="stat-card-icon orange"><i class="fas fa-trophy"></i></div>
+            </div>
+            <div class="stat-card-value">Cappuccino</div>
+            <div class="stat-card-label">Menu Terlaris</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <div class="stat-card-icon red"><i class="fas fa-percentage"></i></div>
+            </div>
+            <div class="stat-card-value">Rp 54.800</div>
+            <div class="stat-card-label">Rata-rata per Transaksi</div>
+          </div>
+        </div>
+
+        <!-- Monthly Chart Placeholder -->
+        <div class="dash-table-card">
+          <div class="dash-table-header">
+            <h3><i class="fas fa-chart-area"></i> Grafik Pendapatan Bulanan</h3>
+          </div>
+          <div style="padding: 24px;">
+            <svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" style="width: 100%;">
+              <!-- Grid Lines -->
+              <line x1="60" y1="30" x2="60" y2="250" stroke="#e8e8e8" stroke-width="1"/>
+              <line x1="60" y1="250" x2="760" y2="250" stroke="#e8e8e8" stroke-width="1"/>
+              <line x1="60" y1="195" x2="760" y2="195" stroke="#e8e8e8" stroke-width="0.5" stroke-dasharray="4"/>
+              <line x1="60" y1="140" x2="760" y2="140" stroke="#e8e8e8" stroke-width="0.5" stroke-dasharray="4"/>
+              <line x1="60" y1="85" x2="760" y2="85" stroke="#e8e8e8" stroke-width="0.5" stroke-dasharray="4"/>
+              
+              <!-- Y-axis labels -->
+              <text x="50" y="255" text-anchor="end" font-size="11" fill="#737373">0</text>
+              <text x="50" y="200" text-anchor="end" font-size="11" fill="#737373">10jt</text>
+              <text x="50" y="145" text-anchor="end" font-size="11" fill="#737373">20jt</text>
+              <text x="50" y="90" text-anchor="end" font-size="11" fill="#737373">30jt</text>
+              <text x="50" y="35" text-anchor="end" font-size="11" fill="#737373">40jt</text>
+              
+              <!-- Bars -->
+              <rect x="80" y="160" width="45" height="90" rx="4" fill="#1a6b52" opacity="0.7"/>
+              <rect x="145" y="130" width="45" height="120" rx="4" fill="#1a6b52" opacity="0.75"/>
+              <rect x="210" y="110" width="45" height="140" rx="4" fill="#1a6b52" opacity="0.8"/>
+              <rect x="275" y="90" width="45" height="160" rx="4" fill="#1a6b52" opacity="0.85"/>
+              <rect x="340" y="70" width="45" height="180" rx="4" fill="#1a6b52" opacity="0.9"/>
+              <rect x="405" y="100" width="45" height="150" rx="4" fill="#1a6b52" opacity="0.85"/>
+              <rect x="470" y="80" width="45" height="170" rx="4" fill="#1a6b52" opacity="0.9"/>
+              <rect x="535" y="60" width="45" height="190" rx="4" fill="#2aad84"/>
+              <rect x="600" y="50" width="45" height="200" rx="4" fill="#1a6b52" opacity="0.95"/>
+              <rect x="665" y="55" width="45" height="195" rx="4" fill="#c8956c" opacity="0.9"/>
+              
+              <!-- X-axis labels -->
+              <text x="102" y="270" text-anchor="middle" font-size="10" fill="#737373">Jan</text>
+              <text x="167" y="270" text-anchor="middle" font-size="10" fill="#737373">Feb</text>
+              <text x="232" y="270" text-anchor="middle" font-size="10" fill="#737373">Mar</text>
+              <text x="297" y="270" text-anchor="middle" font-size="10" fill="#737373">Apr</text>
+              <text x="362" y="270" text-anchor="middle" font-size="10" fill="#737373">Mei</text>
+              <text x="427" y="270" text-anchor="middle" font-size="10" fill="#737373">Jun</text>
+              <text x="492" y="270" text-anchor="middle" font-size="10" fill="#737373">Jul</text>
+              <text x="557" y="270" text-anchor="middle" font-size="10" fill="#737373">Agu</text>
+              <text x="622" y="270" text-anchor="middle" font-size="10" fill="#737373">Sep</text>
+              <text x="687" y="270" text-anchor="middle" font-size="10" fill="#737373">Okt</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin: Pengaturan -->
+      <div class="dash-section" id="section-pengaturan">
+        <div class="dash-top">
+          <div>
+            <h1>Pengaturan Sistem</h1>
+            <p class="dash-date">Konfigurasi sistem NGOFFEE</p>
+          </div>
+        </div>
+
+        <div class="admin-form-card">
+          <h3><i class="fas fa-store"></i> Informasi Café</h3>
+          <div class="form-row">
+            <div class="input-group">
+              <label>Nama Café</label>
+              <input type="text" value="NGOFFEE Café & Hotel">
+            </div>
+            <div class="input-group">
+              <label>Telepon</label>
+              <input type="text" value="+62 22 1234 5678">
+            </div>
+          </div>
+          <div class="input-group">
+            <label>Alamat</label>
+            <textarea rows="2">Jl. Kopi Nusantara No. 88, Kota Bandung, Jawa Barat 40115</textarea>
+          </div>
+          <div class="form-row">
+            <div class="input-group">
+              <label>Jam Buka</label>
+              <input type="time" value="07:00">
+            </div>
+            <div class="input-group">
+              <label>Jam Tutup</label>
+              <input type="time" value="23:00">
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm">
+            <i class="fas fa-save"></i> Simpan Perubahan
+          </button>
+        </div>
+
+        <div class="admin-form-card">
+          <h3><i class="fas fa-cog"></i> Pengaturan Pembayaran</h3>
+          <div class="form-row">
+            <div class="input-group">
+              <label>QRIS Merchant ID</label>
+              <input type="text" value="NGF-MERCHANT-001">
+            </div>
+            <div class="input-group">
+              <label>Nama Merchant</label>
+              <input type="text" value="NGOFFEE Café">
+            </div>
+          </div>
+          <div class="input-group">
+            <label>Metode Pembayaran Aktif</label>
+            <div style="display: flex; gap: 16px; margin-top: 8px;">
+              <label style="display: flex; align-items: center; gap: 6px; font-size: 0.9rem; cursor: pointer;">
+                <input type="checkbox" checked> QRIS
+              </label>
+              <label style="display: flex; align-items: center; gap: 6px; font-size: 0.9rem; cursor: pointer;">
+                <input type="checkbox" checked> Cash
+              </label>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm">
+            <i class="fas fa-save"></i> Simpan Perubahan
+          </button>
+        </div>
+      </div>
+
+      <!-- Stok Bahan Baku -->
+      <div class="dash-section" id="section-stok">
+        <div class="dash-top">
+          <div>
+            <h1>Stok Bahan Baku</h1>
+            <p class="dash-date">Kelola stok bahan baku dan resep</p>
+          </div>
+          <button class="btn btn-primary btn-sm">
+            <i class="fas fa-plus"></i> Tambah Bahan
+          </button>
+        </div>
+
+        <div class="dash-table-card">
+          <div class="dash-table-header">
+            <h3><i class="fas fa-boxes"></i> Daftar Bahan Baku</h3>
+          </div>
+          <table class="dash-table">
+            <thead>
+              <tr>
+                <th>Bahan</th>
+                <th>Kategori</th>
+                <th>Stok</th>
+                <th>Satuan</th>
+                <th>Min. Stok</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="stokTableBody">
+              <!-- Generated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
